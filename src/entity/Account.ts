@@ -16,6 +16,9 @@ export class Account extends BaseEntity {
   @Column({ length: 100, nullable: false })
   password_hash: string;
 
+  @Column({ length: 50, nullable: false })
+  access_token: string;
+
   @Column()
   is_doer: boolean = false;
 

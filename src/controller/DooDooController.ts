@@ -1,24 +1,76 @@
-// import { getRepository } from 'typeorm';
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
+import {
+  Req,
+  Res,
+  Param,
+  Body,
+  Get,
+  Post,
+  Put,
+  Delete,
+  JsonController,
+  NotFoundError,
+} from 'routing-controllers';
+
 import { DooDoo } from '../entity/DooDoo';
 
+@JsonController()
 export class DooDooController {
-  // private userRepository = getRepository(User);
-
-  async all(request: Request, response: Response, next: NextFunction) {
-    return DooDoo.find({ relations: ['assigned_to_account', 'created_by_account'] });
+  @Get('/doodoo')
+  async getAll(@Req() request: Request, @Res() response: Response, next: NextFunction) {
+    return await DooDoo.find({ relations: ['assigned_to_account', 'created_by_account'] });
   }
 
-  async one(request: Request, response: Response, next: NextFunction) {
-    return DooDoo.findOne(request.params.id);
+  @Get('/doodoo/:id')
+  async getOne(
+  @Req() request: Request,
+    @Res() response: Response,
+    next: NextFunction,
+    @Param('id') id: number,
+  ) {
+    const doodoo = await DooDoo.findOne(id);
+    if (!doodoo) {
+      throw new NotFoundError('fuck');
+    }
+    return doodoo;
   }
 
-  async save(request: Request, response: Response, next: NextFunction) {
-    return DooDoo.save(request.body);
+  @Post('/doodoo')
+  async save(
+  @Req() request: Request,
+    @Res() response: Response,
+    next: NextFunction,
+    @Body() doodoo: DooDoo,
+  ) {
+    return DooDoo.save(doodoo);
   }
 
-  async remove(request: Request, response: Response, next: NextFunction) {
-    const doodooToRemove: DooDoo = (await DooDoo.findOne(request.params.id)) as DooDoo;
-    await DooDoo.remove(doodooToRemove);
+  @Put('/doodoo/:id')
+  async put(
+  @Req() request: Request,
+    @Res() response: Response,
+    next: NextFunction,
+    @Param('id') id: number,
+    @Body() doodoo: DooDoo,
+  ) {
+    const existing_doodoo = await DooDoo.findOne({ id });
+    if (!existing_doodoo) {
+      throw new NotFoundError('fuck');
+    }
+    return doodoo.save();
+  }
+
+  @Delete('/doodoo/:id')
+  async remove(
+  @Req() request: Request,
+    @Res() response: Response,
+    next: NextFunction,
+    @Param('id') id: number,
+  ) {
+    const doodoo_to_remove = await DooDoo.findOne(id);
+    if (!doodoo_to_remove) {
+      throw new NotFoundError('fuck');
+    }
+    await DooDoo.remove(doodoo_to_remove);
   }
 }
