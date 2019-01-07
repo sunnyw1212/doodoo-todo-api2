@@ -16,22 +16,22 @@ import {
 // import { validate } from 'class-validator';
 // import { validatePassword } from '../utils/validator';
 
-// import { Account } from '../entity/Account';
+// import { User } from '../entity/User';
 
 @JsonController()
 export class UserController {
   // async all(request: Request, response: Response, next: NextFunction) {
-  //   return Account.find({ relations: ['assigned_to_account', 'created_by_account'] });
+  //   return User.find({ relations: ['assigned_to_user', 'created_by_user'] });
   // }
   // async one(request: Request, response: Response, next: NextFunction) {
-  //   return Account.findOne(request.params.id);
+  //   return User.findOne(request.params.id);
   // }
   // async save(request: Request, response: Response, next: NextFunction) {
-  //   return Account.save(request.body);
+  //   return User.save(request.body);
   // }
   // async remove(request: Request, response: Response, next: NextFunction) {
-  //   const accountToRemove: Account = (await Account.findOne(request.params
-  //     .id as number)) as Account;
-  //   await Account.remove(accountToRemove);
+  //   const userToRemove: User = (await User.findOne(request.params
+  //     .id as number)) as User;
+  //   await User.remove(userToRemove);
   // }
 }

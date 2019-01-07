@@ -6,13 +6,14 @@ import * as compression from 'compression';
 import * as express from 'express';
 import * as cors from 'cors';
 import * as expressSession from 'express-session';
+import * as mySQLSessionStore from 'express-mysql-session';
 import * as passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { localStrategyVerifyCB, serializeUserCB, deserializeUserCB } from './utils/passport';
 
 // import { Request, Response } from 'express';
 // import { Routes } from './routes/api/routes';
-// import { Account } from './entity/Account';
+// import { User } from './entity/User';
 // import { DooDoo } from './entity/DooDoo';
 // import { DooDooController2 } from '../src/controller/DooDooController2';
 
@@ -21,15 +22,29 @@ createConnection()
     // create express app
     const app = express();
 
-    // // setup express app here
+    // setup express app here
     app.use(bodyParser.json());
     app.use(cors());
     app.use(compression());
+
+    // setup mysql session storage
+    // https://www.npmjs.com/package/express-mysql-session
+    const expressMySQLSessionStore = mySQLSessionStore(expressSession);
+    const expressMySQLSessionStoreOptions = {
+      host: 'host.docker.internal',
+      port: 3306,
+      user: 'root',
+      password: 'password',
+      database: 'test',
+    };
+    const sessionStore = new expressMySQLSessionStore(expressMySQLSessionStoreOptions);
     app.use(
       expressSession({
+        key: 'my_session_cookie_name',
         secret: 'this is the bigsecret',
-        resave: true,
-        saveUninitialized: true,
+        store: sessionStore,
+        resave: false,
+        saveUninitialized: false,
       }),
     );
 
@@ -80,11 +95,11 @@ createConnection()
     app.listen(3000);
 
     // create initial dummy user
-    // const account = new Account();
-    // account.email_address = 'sunny.wong@backatyou.com';
-    // account.password_hash = 'password';
-    // account.is_doer = true;
-    // await account.save();
+    // const user = new User();
+    // user.email_address = 'sunny.wong@backatyou.com';
+    // user.password_hash = 'password';
+    // user.is_doer = true;
+    // await user.save();
 
     // create initial doodoo
     // const doodoo = new DooDoo();

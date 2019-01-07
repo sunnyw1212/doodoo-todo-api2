@@ -18,7 +18,7 @@ import { DooDoo } from '../entity/DooDoo';
 export class DooDooController {
   @Get('/doodoo')
   async getAll(@Req() request: Request, @Res() response: Response, next: NextFunction) {
-    return await DooDoo.find({ relations: ['assigned_to_account', 'created_by_account'] });
+    return await DooDoo.find({ relations: ['assigned_to_user', 'created_by_user'] });
   }
 
   @Get('/doodoo/:id')
