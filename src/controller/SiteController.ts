@@ -4,12 +4,12 @@ import {
 import { validate } from 'class-validator';
 import { validatePassword } from '../utils/validator';
 import { convertPlaintextToHash, generateAccessToken } from '../utils/security';
-import { Account } from '../entity/Account';
+import { User } from '../entity/User';
 
 @JsonController()
 export class SiteController {
   /**
-   * registers and creates a new Account
+   * registers and creates a new User
    */
   @Post('/register')
   async register(
@@ -25,23 +25,23 @@ export class SiteController {
     // hash password
     const password_hash: string = await convertPlaintextToHash(password);
     console.log(password_hash.length);
-    // create Account
-    const account = new Account();
-    account.email_address = email_address;
-    account.password_hash = password_hash;
-    account.is_doer = is_doer;
+    // create user
+    const user = new User();
+    user.email_address = email_address;
+    user.password_hash = password_hash;
+    user.is_doer = is_doer;
     // generate access token
-    account.access_token = generateAccessToken();
-    // only set assigned_doer if account is not a doer themself
+    user.access_token = generateAccessToken();
+    // only set assigned_doer if user is not a doer themself
     if (!is_doer) {
-      account.assigned_doer = assigned_doer;
+      user.assigned_doer = assigned_doer;
     }
 
-    const validation_results = await validate(account);
+    const validation_results = await validate(user);
     if (validation_results.length > 0) {
       throw new BadRequestError(validation_results.toString());
     }
-    return await account.save();
+    return await user.save();
   }
 
   @Post('login')
@@ -51,20 +51,20 @@ export class SiteController {
   ) {}
 
   // async all(request: Request, response: Response, next: NextFunction) {
-  //   return Account.find({ relations: ['assigned_to_account', 'created_by_account'] });
+  //   return User.find({ relations: ['assigned_to_user', 'created_by_user'] });
   // }
 
   // async one(request: Request, response: Response, next: NextFunction) {
-  //   return Account.findOne(request.params.id);
+  //   return User.findOne(request.params.id);
   // }
 
   // async save(request: Request, response: Response, next: NextFunction) {
-  //   return Account.save(request.body);
+  //   return User.save(request.body);
   // }
 
   // async remove(request: Request, response: Response, next: NextFunction) {
-  //   const accountToRemove: Account = (await Account.findOne(request.params
-  //     .id as number)) as Account;
-  //   await Account.remove(accountToRemove);
+  //   const userToRemove: User = (await User.findOne(request.params
+  //     .id as number));
+  //   await User.remove(userToRemove);
   // }
 }

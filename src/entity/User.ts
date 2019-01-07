@@ -5,7 +5,7 @@ import { IsEmail } from 'class-validator';
 import { DooDoo } from './DooDoo';
 
 @Entity()
-export class Account extends BaseEntity {
+export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

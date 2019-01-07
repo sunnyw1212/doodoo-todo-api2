@@ -19,7 +19,7 @@ import {
 // import { Account } from '../entity/Account';
 
 @JsonController()
-export class AccountController {
+export class UserController {
   // async all(request: Request, response: Response, next: NextFunction) {
   //   return Account.find({ relations: ['assigned_to_account', 'created_by_account'] });
   // }

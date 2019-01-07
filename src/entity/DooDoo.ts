@@ -10,7 +10,7 @@ import {
   Index,
 } from 'typeorm';
 import { MinLength } from 'class-validator';
-import { Account } from './Account';
+import { User } from './User';
 
 @Entity()
 export class DooDoo extends BaseEntity {
@@ -39,17 +39,17 @@ export class DooDoo extends BaseEntity {
   @UpdateDateColumn({ nullable: true, type: 'timestamp' })
   updated_at: Date;
 
-  @ManyToOne(type => Account, account => account.assigned_doodoos, {
+  @ManyToOne(type => User, user => user.assigned_doodoos, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'assigned_to' })
-  assigned_to_account: Account;
+  assigned_to_user: User;
 
-  @ManyToOne(type => Account, account => account.created_doodoos, {
+  @ManyToOne(type => User, user => user.created_doodoos, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'created_by' })
-  created_by_account: Account;
+  created_by_user: User;
 }
