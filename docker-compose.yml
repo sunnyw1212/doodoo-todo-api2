@@ -11,3 +11,10 @@ services:
     volumes:
       - ./:/usr/src/app/doodoo-todo-api2
       - /usr/src/app/node_modules/
+  loadbalancer:
+    build: ./loadbalancer
+    tty: true
+    links:
+      - backend
+    ports:
+      - "8080:8080"

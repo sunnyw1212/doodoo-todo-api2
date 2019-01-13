@@ -16,7 +16,6 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.1",
     "class-validator": "^0.9.1",
-    "compression": "^1.7.3",
     "cors": "^2.8.5",
     "express": "^4.15.4",
     "express-mysql-session": "^2.1.0",

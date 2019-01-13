@@ -2,7 +2,6 @@ import 'reflect-metadata';
 import { createConnection } from 'typeorm';
 import { useExpressServer } from 'routing-controllers';
 import * as bodyParser from 'body-parser';
-import * as compression from 'compression';
 import * as express from 'express';
 import * as cors from 'cors';
 import * as helmet from 'helmet';
@@ -26,7 +25,6 @@ createConnection()
     // setup express app here
     app.use(bodyParser.json());
     app.use(cors());
-    app.use(compression());
     app.use(helmet());
 
     // setup mysql session storage
