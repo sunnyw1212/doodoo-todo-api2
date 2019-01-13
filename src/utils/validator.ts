@@ -7,5 +7,10 @@ export const validatePassword = (password: string): boolean => {
 
 export const validateEmailAddress = (email_address: string): boolean => {
   const validator: Validator = new Validator();
-  return validator.isNotEmpty(email_address) && validator.isEmail(email_address);
+  return validator.isEmail(email_address);
+};
+
+export const validateNumber = (number: number): boolean => {
+  const validator: Validator = new Validator();
+  return validator.isNumber(number);
 };

@@ -5,6 +5,7 @@ import * as bodyParser from 'body-parser';
 import * as compression from 'compression';
 import * as express from 'express';
 import * as cors from 'cors';
+import * as helmet from 'helmet';
 import * as expressSession from 'express-session';
 import * as mySQLSessionStore from 'express-mysql-session';
 import * as passport from 'passport';
@@ -26,6 +27,7 @@ createConnection()
     app.use(bodyParser.json());
     app.use(cors());
     app.use(compression());
+    app.use(helmet());
 
     // setup mysql session storage
     // https://www.npmjs.com/package/express-mysql-session
@@ -51,6 +53,10 @@ createConnection()
     // use express app
     useExpressServer(app, {
       routePrefix: '/api/v2',
+      defaultErrorHandler: false,
+      middlewares: [
+        `${__dirname}/middleware/*.ts`, // register error handler
+      ],
       controllers: [`${__dirname}/controller/*.ts`],
     });
 

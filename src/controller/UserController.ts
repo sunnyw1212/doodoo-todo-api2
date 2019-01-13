@@ -20,16 +20,16 @@ import {
 
 @JsonController()
 export class UserController {
-  // async all(request: Request, response: Response, next: NextFunction) {
+  // async all(request: Request, response: Response) {
   //   return User.find({ relations: ['assigned_to_user', 'created_by_user'] });
   // }
-  // async one(request: Request, response: Response, next: NextFunction) {
+  // async one(request: Request, response: Response) {
   //   return User.findOne(request.params.id);
   // }
-  // async save(request: Request, response: Response, next: NextFunction) {
+  // async save(request: Request, response: Response) {
   //   return User.save(request.body);
   // }
-  // async remove(request: Request, response: Response, next: NextFunction) {
+  // async remove(request: Request, response: Response) {
   //   const userToRemove: User = (await User.findOne(request.params
   //     .id as number)) as User;
   //   await User.remove(userToRemove);
