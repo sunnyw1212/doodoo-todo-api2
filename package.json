@@ -24,16 +24,15 @@
     "helmet": "^3.15.0",
     "multer": "^1.4.1",
     "mysql": "^2.14.1",
-    "nodemon": "^1.18.9",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
+    "pm2": "^3.2.8",
     "reflect-metadata": "^0.1.10",
     "routing-controllers": "^0.7.7",
     "socket.io": "^2.2.0",
     "typeorm": "0.2.9"
   },
   "scripts": {
-    "start": "ts-node src/index.ts",
-    "dev": "nodemon --exec ts-node -- ./src/index.ts"
+    "start": "ts-node src/index.ts"
   }
 }

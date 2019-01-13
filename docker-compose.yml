@@ -4,7 +4,7 @@ services:
   backend:
     container_name: doodoo-todo-api2
     build: .
-    command: npm run dev
+    command: pm2 start processes.json --no-daemon
     working_dir: /usr/src/app/doodoo-todo-api2
     ports:
       - "3000:3000"

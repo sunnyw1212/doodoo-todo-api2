@@ -119,3 +119,14 @@ createConnection()
     );
   })
   .catch(error => console.log(error));
+
+process.on('unhandledRejection', (error, rejectedPromise) => {
+  console.log('Unhandled Rejection at:', rejectedPromise, 'reason:', error);
+  // Application specific logging, throwing an error, or other logic here
+});
+
+process.on('uncaughtException', (err) => {
+  console.error(`${new Date().toUTCString()} uncaughtException:`, err.message);
+  console.error(err.stack);
+  process.exit(1);
+});

@@ -1,0 +1,17 @@
+{
+  "apps": [
+    {
+      "name": "doodoo-todo-api2",
+      "script": "./src/index.ts",
+      "merge_logs": true,
+      "max_restarts": 20,
+      "instances": 1,
+      "max_memory_restart": "200M",
+      "watch": true,
+      "env": {
+        "PORT": 3000,
+        "NODE_ENV": "development"
+      }
+    }
+  ]
+}
