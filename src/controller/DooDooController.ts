@@ -16,6 +16,7 @@ import {
 import { DooDoo } from '../entity/DooDoo';
 import { validateNumber } from '../utils/validator';
 import { CustomSuccessResponse } from '../types';
+// import { logger } from '../../logger';
 
 @JsonController()
 export class DooDooController {

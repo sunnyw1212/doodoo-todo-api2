@@ -9,6 +9,7 @@ import * as expressSession from 'express-session';
 import * as mySQLSessionStore from 'express-mysql-session';
 import * as passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
+import { logger } from '../logger';
 import { localStrategyVerifyCB, serializeUserCB, deserializeUserCB } from './utils/passport';
 
 // import { Request, Response } from 'express';
@@ -112,19 +113,19 @@ createConnection()
     // doodoo.assigned_to = 1;
     // await doodoo.save();
 
-    console.log(
+    logger.error(
       'Express server has started on port 3000. Open http://0.0.0.0:3000/api/v2/doodoo to see results',
     );
   })
-  .catch(error => console.log(error));
+  .catch(error => logger.log(error));
 
 process.on('unhandledRejection', (error, rejectedPromise) => {
-  console.log('Unhandled Rejection at:', rejectedPromise, 'reason:', error);
+  logger.error(`Unhandled Rejection at: ${rejectedPromise}reason:${error}`);
   // Application specific logging, throwing an error, or other logic here
 });
 
 process.on('uncaughtException', (err) => {
-  console.error(`${new Date().toUTCString()} uncaughtException:`, err.message);
-  console.error(err.stack);
+  logger.error(`${new Date().toUTCString()} uncaughtException:`, err.message);
+  logger.error(`uncaughtException errstack: ${err.stack}`);
   process.exit(1);
 });

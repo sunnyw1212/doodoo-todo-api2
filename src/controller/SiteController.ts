@@ -5,6 +5,7 @@ import { validate } from 'class-validator';
 import { validatePassword } from '../utils/validator';
 import { convertPlaintextToHash, generateAccessToken } from '../utils/security';
 import { User } from '../entity/User';
+import { logger } from '../../logger';
 
 @JsonController()
 export class SiteController {
@@ -24,7 +25,7 @@ export class SiteController {
 
     // hash password
     const password_hash: string = await convertPlaintextToHash(password);
-    console.log(password_hash.length);
+    logger.info(`password_hash length${password_hash.length}`);
     // create user
     const user = new User();
     user.email_address = email_address;

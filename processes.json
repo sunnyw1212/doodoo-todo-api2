@@ -8,6 +8,7 @@
       "instances": 1,
       "max_memory_restart": "200M",
       "watch": true,
+      "ignore_watch": ["logs"],
       "env": {
         "PORT": 3000,
         "NODE_ENV": "development"
