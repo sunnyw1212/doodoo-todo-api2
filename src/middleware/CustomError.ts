@@ -1,6 +1,7 @@
 import { Middleware, ExpressErrorMiddlewareInterface } from 'routing-controllers';
 import { Request, Response, NextFunction } from 'express';
 import { CustomErrorResponse } from '../types';
+import { logger } from '../../logger';
 @Middleware({ type: 'after' })
 export class CustomError implements ExpressErrorMiddlewareInterface {
   /**
@@ -17,10 +18,18 @@ export class CustomError implements ExpressErrorMiddlewareInterface {
     const responseObject: CustomErrorResponse = {
       status: 'fail',
     };
-
+    logger.info('error.message: ', error.message);
     if (error.message) {
-      responseObject.message = error.message;
+      if (typeof error.message === 'string') {
+        responseObject.message = error.message;
+      } else if (typeof error.message === 'object') {
+        // handle nested error messages
+        if (error.message.message && typeof error.message.message === 'string') {
+          responseObject.message = error.message.message;
+        }
+      }
     }
+
     if (error.name) {
       responseObject.name = error.name;
     }

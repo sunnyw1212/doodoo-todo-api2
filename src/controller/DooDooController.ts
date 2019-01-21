@@ -11,17 +11,21 @@ import {
   JsonController,
   NotFoundError,
   BadRequestError,
+  UseBefore,
 } from 'routing-controllers';
 
 import { DooDoo } from '../entity/DooDoo';
 import { validateNumber } from '../utils/validator';
 import { CustomSuccessResponse } from '../types';
-// import { logger } from '../../logger';
+import { LocalAuthorization } from '../middleware/LocalAuthorization';
+import { logger } from '../../logger';
 
 @JsonController()
+@UseBefore(LocalAuthorization)
 export class DooDooController {
   @Get('/doodoo')
   async getAll(@Req() request: Request, @Res() response: Response) {
+    logger.info('user', request.user);
     return await DooDoo.find({ relations: ['assigned_to_user', 'created_by_user'] });
   }
 

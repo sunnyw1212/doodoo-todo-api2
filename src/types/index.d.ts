@@ -10,3 +10,11 @@ export interface CustomSuccessResponse {
   message?: string;
   data?: object;
 }
+
+export interface UserSummary {
+  id: number;
+  email_address: string;
+  access_token: string;
+  is_doer: boolean;
+  assigned_doer?: number;
+}

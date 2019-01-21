@@ -10,8 +10,9 @@ import * as mySQLSessionStore from 'express-mysql-session';
 import * as passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { logger } from '../logger';
-import { localStrategyVerifyCB, serializeUserCB, deserializeUserCB } from './utils/passport';
-
+import { authService } from './service';
+// import { localStrategyVerifyCB } from './utils/passport';
+// import { localStrategyVerifyCB, serializeUserCB, deserializeUserCB } from './utils/passport';
 // import { Request, Response } from 'express';
 // import { Routes } from './routes/api/routes';
 // import { User } from './entity/User';
@@ -24,7 +25,16 @@ createConnection()
     const app = express();
 
     // setup express app here
-    app.use(bodyParser.json());
+    app.use(
+      bodyParser.json({
+        type: 'application/json',
+      }),
+    );
+    app.use(
+      bodyParser.urlencoded({
+        extended: true,
+      }),
+    );
     app.use(cors());
     app.use(helmet());
 
@@ -49,6 +59,32 @@ createConnection()
       }),
     );
 
+    // Configure the local strategy for use by Passport.
+    //
+    // The local strategy require a `verify` function which receives the credentials
+    // (`username` and `password`) submitted by the user.  The function must verify
+    // that the password is correct and then invoke `cb` with a user object, which
+    // will be set at `req.user` in route handlers after authentication.
+    passport.use(
+      new LocalStrategy(
+        { usernameField: 'email_address', passwordField: 'password' },
+        authService.localStrategyVerifyCB,
+      ),
+    );
+    // Configure Passport authenticated session persistence.
+    //
+    // In order to restore authentication state across HTTP requests, Passport needs
+    // to serialize users into and deserialize users out of the session.  The
+    // typical implementation of this is as simple as supplying the user ID when
+    // serializing, and querying the user record by ID from the database when
+    // deserializing.
+    passport.serializeUser(authService.serializeUserCB);
+    passport.deserializeUser(authService.deserializeUserCB);
+    // initialize passport and restore authentication state, if any, from the
+    // session
+    app.use(passport.initialize());
+    app.use(passport.session());
+
     // use express app
     useExpressServer(app, {
       routePrefix: '/api/v2',
@@ -58,27 +94,6 @@ createConnection()
       ],
       controllers: [`${__dirname}/controller/*.ts`],
     });
-
-    // Configure the local strategy for use by Passport.
-    //
-    // The local strategy require a `verify` function which receives the credentials
-    // (`username` and `password`) submitted by the user.  The function must verify
-    // that the password is correct and then invoke `cb` with a user object, which
-    // will be set at `req.user` in route handlers after authentication.
-    passport.use(new LocalStrategy(localStrategyVerifyCB));
-    // Configure Passport authenticated session persistence.
-    //
-    // In order to restore authentication state across HTTP requests, Passport needs
-    // to serialize users into and deserialize users out of the session.  The
-    // typical implementation of this is as simple as supplying the user ID when
-    // serializing, and querying the user record by ID from the database when
-    // deserializing.
-    passport.serializeUser(serializeUserCB);
-    passport.deserializeUser(deserializeUserCB);
-    // initialize passport and restore authentication state, if any, from the
-    // session
-    app.use(passport.initialize());
-    app.use(passport.session());
 
     // register express routes from defined application routes
     // Routes.forEach((route) => {

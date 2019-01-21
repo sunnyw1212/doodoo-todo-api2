@@ -1,10 +1,11 @@
 import {
-  Entity, PrimaryGeneratedColumn, Column, BaseEntity, OneToMany,
+  Entity, Index, PrimaryGeneratedColumn, Column, BaseEntity, OneToMany,
 } from 'typeorm';
 import { IsEmail } from 'class-validator';
 import { DooDoo } from './DooDoo';
-
+import { UserSummary } from '../types';
 @Entity()
+@Index(['email_address'], { unique: true })
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -30,4 +31,15 @@ export class User extends BaseEntity {
 
   @OneToMany(type => DooDoo, doodoo => doodoo.created_by)
   created_doodoos: DooDoo[];
+
+  summary(): UserSummary {
+    const user_summary: UserSummary = {
+      id: this.id,
+      email_address: this.email_address,
+      access_token: this.access_token,
+      is_doer: this.is_doer,
+      assigned_doer: this.assigned_doer,
+    };
+    return user_summary;
+  }
 }

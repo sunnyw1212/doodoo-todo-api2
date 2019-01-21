@@ -1,11 +1,23 @@
 import {
-  Post, JsonController, BadRequestError, BodyParam,
+  Post,
+  JsonController,
+  BadRequestError,
+  BodyParam,
+  Req,
+  Res,
+  // ForbiddenError,
 } from 'routing-controllers';
 import { validate } from 'class-validator';
+import { Request, Response } from 'express';
+// import * as passport from 'passport';
 import { validatePassword } from '../utils/validator';
-import { convertPlaintextToHash, generateAccessToken } from '../utils/security';
-import { User } from '../entity/User';
-import { logger } from '../../logger';
+// import { convertPlaintextToHash, generateAccessToken } from '../utils/security';
+// import { User } from '../entity/User';
+// import { logger } from '../../logger';
+// import { userService, authService } from '../service';
+import { userService, authService } from '../service';
+import { CustomSuccessResponse } from '../types';
+// import { logger } from '../../logger';
 
 @JsonController()
 export class SiteController {
@@ -14,7 +26,9 @@ export class SiteController {
    */
   @Post('/register')
   async register(
-  @BodyParam('email_address') email_address: string,
+  @Req() request: Request,
+    @Res() response: Response,
+    @BodyParam('email_address') email_address: string,
     @BodyParam('password') password: string,
     @BodyParam('is_doer') is_doer: boolean,
     @BodyParam('assigned_doer') assigned_doer: number,
@@ -22,50 +36,39 @@ export class SiteController {
     if (!validatePassword(password)) {
       throw new BadRequestError('Invalid password');
     }
-
-    // hash password
-    const password_hash: string = await convertPlaintextToHash(password);
-    logger.info(`password_hash length${password_hash.length}`);
-    // create user
-    const user = new User();
-    user.email_address = email_address;
-    user.password_hash = password_hash;
-    user.is_doer = is_doer;
-    // generate access token
-    user.access_token = generateAccessToken();
-    // only set assigned_doer if user is not a doer themself
-    if (!is_doer) {
-      user.assigned_doer = assigned_doer;
-    }
-
+    const user = await userService.create(email_address, password, is_doer, assigned_doer);
     const validation_results = await validate(user);
     if (validation_results.length > 0) {
       throw new BadRequestError(validation_results.toString());
     }
-    return await user.save();
+    const result: CustomSuccessResponse = {
+      status: 'success',
+      data: {
+        user: user.summary(),
+      },
+    };
+    return response.status(200).json(result);
   }
 
-  @Post('login')
-  async login(
-  @BodyParam('email_address') email_address: string,
-    @BodyParam('password') password: string,
-  ) {}
+  @Post('/login')
+  async login(@Req() request: Request, @Res() response: Response) {
+    const auth_response = await authService.login(request, response);
+    const result: CustomSuccessResponse = {
+      status: 'success',
+      data: {
+        user: auth_response,
+      },
+    };
+    return response.status(200).json(result);
+  }
 
-  // async all(request: Request, response: Response) {
-  //   return User.find({ relations: ['assigned_to_user', 'created_by_user'] });
-  // }
-
-  // async one(request: Request, response: Response) {
-  //   return User.findOne(request.params.id);
-  // }
-
-  // async save(request: Request, response: Response) {
-  //   return User.save(request.body);
-  // }
-
-  // async remove(request: Request, response: Response) {
-  //   const userToRemove: User = (await User.findOne(request.params
-  //     .id as number));
-  //   await User.remove(userToRemove);
-  // }
+  @Post('/logout')
+  logout(@Req() request: Request, @Res() response: Response) {
+    authService.logout(request, response);
+    const result: CustomSuccessResponse = {
+      status: 'success',
+      message: 'Logged out successfully',
+    };
+    return response.status(200).json(result);
+  }
 }
